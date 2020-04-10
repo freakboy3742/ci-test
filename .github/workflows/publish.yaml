@@ -17,13 +17,13 @@ jobs:
       env:
         TAG_NAME: ${{ github.ref }}
       run: |
-        export
         export TAG=$(basename $TAG_NAME)
         echo "TAG=${TAG}"
         export TAG_VERSION="${TAG%-*}"
         export TAG_BUILD="${TAG#*-}"
         echo "PY_VERSION=${TAG_VERSION}"
         echo "BUILD_NUMBER=${TAG_BUILD}"
+        echo "::set-env name=TAG::${TAG}"
         echo "::set-env name=PY_VERSION::${TAG_VERSION}"
         echo "::set-env name=BUILD_NUMBER::${TAG_BUILD}"
     - name: Update Release Asset to S3
