@@ -44,15 +44,6 @@ jobs:
         asset_path: ./dist/Python-${{ env.PY_VERSION }}-Android-support.${{ env.BUILD_NUMBER }}.zip
         asset_name: Python-${{ env.PY_VERSION }}-Android-support.${{ env.BUILD_NUMBER }}.zip
         asset_content_type: application/zip
-    - name: Upload Release Asset to Github
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/Python-${{ env.PY_VERSION }}-Android-support.${{ env.BUILD_NUMBER }}.zip
-        asset_name: Python-${{ env.PY_VERSION }}-Android-support.${{ env.BUILD_NUMBER }}.zip
-        asset_content_type: application/zip
     - name: Set up Python environment
       uses: actions/setup-python@v1
       with:
