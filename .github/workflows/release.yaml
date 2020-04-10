@@ -11,10 +11,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set build variables from tag
       run: |
-        echo "TAG_NAME=${TAG_NAME}"
-        export
-        export version="${TAG_NAME$$-*}"
-        export build="${TAG_NAME#*-}"
+        echo "TAG=$(basename $TAG_NAME)"
+        export version="${TAG%-*}"
+        export build="${TAG#*-}"
         echo "PY_VERSION=$version"
         echo "BUILD_NUMBER=$build"
         echo "::set-env name=PY_VERSION::$version"
