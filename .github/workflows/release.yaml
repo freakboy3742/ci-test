@@ -14,10 +14,10 @@ jobs:
         echo "TAG=$(basename $TAG_NAME)"
         export version="${TAG%-*}"
         export build="${TAG#*-}"
-        echo "PY_VERSION=$version"
-        echo "BUILD_NUMBER=$build"
-        echo "::set-env name=PY_VERSION::$version"
-        echo "::set-env name=BUILD_NUMBER::$build"
+        echo "PY_VERSION=${version}"
+        echo "BUILD_NUMBER=${build}"
+        echo "::set-env name=PY_VERSION::${version}"
+        echo "::set-env name=BUILD_NUMBER::${build}"
       env:
         TAG_NAME: ${{ github.ref }}
     - name: Build project
