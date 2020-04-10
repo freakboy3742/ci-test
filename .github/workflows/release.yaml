@@ -1,0 +1,63 @@
+# Run this Action on creating a new tag.
+on:
+  push:
+    tags:
+    - '*-b*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+        version="${TAG_NAME$$-*}"
+        build="${TAG_NAME#*-}"
+        echo "PY_VERSION=$version"
+        echo "BUILD_NUMBER=$build"
+        echo "::set-env name=PY_VERSION::$version"
+        echo "::set-env name=BUILD_NUMBER::$build"
+      env:
+        TAG_NAME: ${{ github.ref }}
+    - name: Build project
+      run: bash -x ${{ env.PY_VERSION }}.sh
+      env:
+        BUILD_NUMBER: ${{ env.BUILD_NUMBER }}
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secre¡ts.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: true
+        prerelease: false
+    - name: Upload Release Asset to Github
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/Python-${{ env.PY_VERSION }}-Android-support.${{ env.BUILD_NUMBER }}.zip
+        asset_name: Python-${{ env.PY_VERSION }}-Android-support.${{ env.BUILD_NUMBER }}.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset to Github
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/Python-${{ env.PY_VERSION }}-Android-support.${{ env.BUILD_NUMBER }}.zip
+        asset_name: Python-${{ env.PY_VERSION }}-Android-support.${{ env.BUILD_NUMBER }}.zip
+        asset_content_type: application/zip
+    - name: Update Release Asset to S3
+      uses: actions/setup-python@v1
+      with:
+        python-version: "3.X"
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        python -m pip install -U pip
+        python -m pip install -U setuptools
+        python -m pip install aws-cli
+        aws s3 cp ./dist/Python-${{ env.PY_VERSION }}-Android-support.${{ env.BUILD_NUMBER }}.zip s3://briefcase-support/python/${{ env.PY_VERSION }}/android/
