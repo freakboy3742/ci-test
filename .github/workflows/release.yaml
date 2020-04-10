@@ -1,5 +1,6 @@
 # Run this Action on creating a new tag matching "<version>-b<build>"
 # e.g., 3.7-b1
+name: Build support package
 on:
   push:
     tags:
