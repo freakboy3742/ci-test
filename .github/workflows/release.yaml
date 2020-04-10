@@ -11,13 +11,14 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set build variables from tag
       run: |
-        echo "TAG=$(basename $TAG_NAME)"
-        export version="${TAG%-*}"
-        export build="${TAG#*-}"
-        echo "PY_VERSION=${version}"
-        echo "BUILD_NUMBER=${build}"
-        echo "::set-env name=PY_VERSION::${version}"
-        echo "::set-env name=BUILD_NUMBER::${build}"
+        export TAG=$(basename $TAG_NAME)
+        echo "TAG=${TAG}"
+        export TAG_VERSION="${TAG%-*}"
+        export TAG_BUILD="${TAG#*-}"
+        echo "PY_VERSION=${TAG_VERSION}"
+        echo "BUILD_NUMBER=${TAG_BUILD}"
+        echo "::set-env name=PY_VERSION::${TAG_VERSION}"
+        echo "::set-env name=BUILD_NUMBER::${TAG_BUILD}"
       env:
         TAG_NAME: ${{ github.ref }}
     - name: Build project
