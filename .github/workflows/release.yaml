@@ -9,9 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: |
-        version="${TAG_NAME$$-*}"
-        build="${TAG_NAME#*-}"
+    - name: Set build variables from tag
+      run: |
+        export version="${TAG_NAME$$-*}"
+        export build="${TAG_NAME#*-}"
         echo "PY_VERSION=$version"
         echo "BUILD_NUMBER=$build"
         echo "::set-env name=PY_VERSION::$version"
